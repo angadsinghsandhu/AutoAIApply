@@ -1,0 +1,249 @@
+{
+  "object": "database",
+  "id": "1674d511-05a8-805f-8312-e91518420596",
+  "cover": null,
+  "icon": null,
+  "created_time": "2024-12-25T04:30:00.000Z",
+  "created_by": {
+    "object": "user",
+    "id": "7685ee79-e130-4dce-840d-c3b743a770bd"
+  },
+  "last_edited_by": {
+    "object": "user",
+    "id": "7685ee79-e130-4dce-840d-c3b743a770bd"
+  },
+  "last_edited_time": "2024-12-25T04:48:00.000Z",
+  "title": [
+    {
+      "type": "text",
+      "text": {
+        "content": "Spring 2025 Applications",
+        "link": null
+      },
+      "annotations": {
+        "bold": false,
+        "italic": false,
+        "strikethrough": false,
+        "underline": false,
+        "code": false,
+        "color": "default"
+      },
+      "plain_text": "Spring 2025 Applications",
+      "href": null
+    }
+  ],
+  "description": [],
+  "is_inline": false,
+  "properties": {
+    "Designation": {
+      "id": "Ex_X",
+      "name": "Designation",
+      "type": "multi_select",
+      "multi_select": {
+        "options": [
+          {
+            "id": "BRD^",
+            "name": "Intern",
+            "color": "gray",
+            "description": null
+          },
+          {
+            "id": "Yjxd",
+            "name": "Data Science",
+            "color": "pink",
+            "description": null
+          },
+          {
+            "id": "am@Y",
+            "name": "Quant",
+            "color": "green",
+            "description": null
+          },
+          {
+            "id": "wYv>",
+            "name": "Applied Scientist",
+            "color": "gray",
+            "description": null
+          },
+          {
+            "id": "ZM[_",
+            "name": "Engineer II",
+            "color": "yellow",
+            "description": null
+          },
+          {
+            "id": "=}jX",
+            "name": "full-stack",
+            "color": "blue",
+            "description": null
+          },
+          {
+            "id": "RzGd",
+            "name": "Backend",
+            "color": "purple",
+            "description": null
+          },
+          {
+            "id": "d;ix",
+            "name": "Frontend",
+            "color": "orange",
+            "description": null
+          },
+          {
+            "id": "oR@<",
+            "name": "Software",
+            "color": "red",
+            "description": null
+          },
+          {
+            "id": "df010a65-2ac7-4dd6-8e6f-0b9e50247d9e",
+            "name": "Machine Learning",
+            "color": "brown",
+            "description": null
+          },
+          {
+            "id": "1bbc8752-9a9a-4c03-bfd3-8c9b84d9aa87",
+            "name": "Engineer I",
+            "color": "default",
+            "description": null
+          }
+        ]
+      }
+    },
+    "Stage": {
+      "id": "%5D%3EAz",
+      "name": "Stage",
+      "type": "select",
+      "select": {
+        "options": [
+          {
+            "id": "h~L{",
+            "name": "Waiting of Referal",
+            "color": "green",
+            "description": null
+          },
+          {
+            "id": "_QwK",
+            "name": "Ready to Apply",
+            "color": "orange",
+            "description": null
+          },
+          {
+            "id": "ffnc",
+            "name": "Applied",
+            "color": "brown",
+            "description": null
+          },
+          {
+            "id": "Vel~",
+            "name": "Recruiter Call",
+            "color": "gray",
+            "description": null
+          },
+          {
+            "id": "Eh^{",
+            "name": "OT",
+            "color": "blue",
+            "description": null
+          },
+          {
+            "id": "tkPL",
+            "name": "Interview",
+            "color": "red",
+            "description": null
+          },
+          {
+            "id": "Wofb",
+            "name": "Offer",
+            "color": "default",
+            "description": null
+          },
+          {
+            "id": "OcBj",
+            "name": "Rejected",
+            "color": "purple",
+            "description": null
+          }
+        ]
+      }
+    },
+    "Job ID": {
+      "id": "%5EGf%5D",
+      "name": "Job ID",
+      "type": "rich_text",
+      "rich_text": {}
+    },
+    "Location": {
+      "id": "i%40iv",
+      "name": "Location",
+      "type": "multi_select",
+      "multi_select": {
+        "options": [
+          {
+            "id": "pln^",
+            "name": "Palo Alto",
+            "color": "gray",
+            "description": null
+          },
+          {
+            "id": "vrLp",
+            "name": "CA",
+            "color": "yellow",
+            "description": null
+          },
+          {
+            "id": "sTZk",
+            "name": "WA",
+            "color": "brown",
+            "description": null
+          },
+          {
+            "id": "{OJX",
+            "name": "NY",
+            "color": "default",
+            "description": null
+          },
+          {
+            "id": "frdz",
+            "name": "Multiple Locations",
+            "color": "blue",
+            "description": null
+          },
+          {
+            "id": "57f7e978-166a-461d-af6d-138c4c859ee5",
+            "name": "Beaverton",
+            "color": "green",
+            "description": null
+          },
+          {
+            "id": "35fd62ca-837f-4cae-8b85-fd98c0d401cc",
+            "name": "OR",
+            "color": "purple",
+            "description": null
+          }
+        ]
+      }
+    },
+    "Date Applied": {
+      "id": "%7Bg_%7C",
+      "name": "Date Applied",
+      "type": "date",
+      "date": {}
+    },
+    "Company": {
+      "id": "title",
+      "name": "Company",
+      "type": "title",
+      "title": {}
+    }
+  },
+  "parent": {
+    "type": "block_id",
+    "block_id": "40ba73e7-9a70-42a3-8d54-792cbd006cdc"
+  },
+  "url": "https://www.notion.so/1674d51105a8805f8312e91518420596",
+  "public_url": "https://angadsandhu.notion.site/1674d51105a8805f8312e91518420596",
+  "archived": false,
+  "in_trash": false,
+  "request_id": "42d63b98-7529-41bf-bd93-31a71c00777a"
+}
