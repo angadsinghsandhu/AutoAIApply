@@ -1,5 +1,5 @@
 """
-FILE: utils/web/application.py
+FILE: src/web/application.py
 
 DESCRIPTION: Utility functions for running the web browser to go through job
 links and scrape job information.

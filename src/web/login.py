@@ -1,5 +1,5 @@
 """
-FILE: utils/web/login.py
+FILE: src/web/login.py
 
 DESCRIPTION: Utility functions for logging into websites using Selenium.
 """

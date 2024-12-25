@@ -1,5 +1,5 @@
 '''
-FILE: utils/notion/database.py
+FILE: src/notion/database.py
 DESCRIPTION: This file contains utility functions for interacting with Notion databases.
 '''
 

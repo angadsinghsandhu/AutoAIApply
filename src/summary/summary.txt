@@ -5,7 +5,7 @@ DIRECTORY STRUCTURE: .
 +f	README.md
 +d	data
 ++f		links.txt
-+d	utils
++d	src
 ++d		ai
 +++f			gen_app.py
 +++f			gen_email.py
@@ -14,6 +14,8 @@ DIRECTORY STRUCTURE: .
 ++d		notion
 +++f			database.py
 +++f			ref.md
+++d		utils
++++f			redirector.py
 ++d		web
 +++f			application.py
 +++f			login.py
@@ -50,11 +52,11 @@ import json
 import curses
 import argparse
 from dotenv import load_dotenv
-from io import StringIO
 
 # local imports
-from utils.notion.database import get_rows, get_row, add_row, update_row, delete_row
-from utils.notion.database import get_db_schema, update_db_schema
+# more db imports: get_row, add_row, update_row, delete_row, update_db_schema
+from src.notion.database import get_rows, get_db_schema
+from src.utils.redirector import StdoutRedirector
 
 # Load environment variables from .env file
 load_dotenv()
@@ -84,47 +86,33 @@ def parse_args():
 
     return parser.parse_args()
 
-class StdoutRedirector:
-    """
-    Redirects stdout to write into the curses window.
-    """
-    def __init__(self, stdscr):
-        self.stdscr = stdscr
-        self.buffer = StringIO()
-        self.line = 0
-
-    def write(self, output):
-        self.buffer.write(output)
-        if '\n' in output:
-            self.flush()
-
-    def flush(self):
-        self.buffer.seek(0)
-        for line in self.buffer:
-            self.stdscr.addstr(self.line, 0, line)
-            self.line += 1
-        self.stdscr.refresh()
-        self.buffer = StringIO()
 
 def test(stdscr):
     """
     Test the Notion API and display results in the curses window.
     """
-    # Redirect stdout to the curses window
     redirector = StdoutRedirector(stdscr)
+    original_stdout = sys.stdout
+
+    # Redirect all prints to the curses window
     sys.stdout = redirector
 
-    # Test the Notion API
+    # ---- START TEST LOGIC ----
     print("Getting all rows from the database...")
     rows = get_rows(DATABASE_ID, HEADERS)
     print(json.dumps(rows, indent=2))
 
-    print("Getting the database schema...")
+    print("\nGetting the database schema...")
     schema = get_db_schema(DATABASE_ID, HEADERS)
     print(json.dumps(schema, indent=2))
+    # ---- END TEST LOGIC ----
+
+    # Make sure everything is flushed out
+    redirector.flush()
 
     # Restore original stdout
-    sys.stdout = sys.__stdout__
+    sys.stdout = original_stdout
+
 
 def main(stdscr):
     """
@@ -134,15 +122,21 @@ def main(stdscr):
     stdscr.clear()
 
     # Menu options
-    menu = ['Run Test Function', 'Exit']
+    menu = [
+        'Run Test Function',
+        'Check Email',
+        'Get New Jobs',
+        'Fill Job Info',
+        'Exit'
+    ]
     current_row = 0
 
-    # Function to print the menu
     def print_menu(selected_row_idx):
         stdscr.clear()
         h, w = stdscr.getmaxyx()
         for idx, row in enumerate(menu):
             x = w // 2 - len(row) // 2
+            # place the menu roughly in the vertical center
             y = h // 2 - len(menu) // 2 + idx
             if idx == selected_row_idx:
                 stdscr.attron(curses.color_pair(1))
@@ -152,7 +146,7 @@ def main(stdscr):
                 stdscr.addstr(y, x, row)
         stdscr.refresh()
 
-    # Initialize colors
+    # Initialize curses settings
     curses.curs_set(0)
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
@@ -161,21 +155,45 @@ def main(stdscr):
     while True:
         key = stdscr.getch()
 
+        # Navigate up/down
         if key == curses.KEY_UP and current_row > 0:
             current_row -= 1
         elif key == curses.KEY_DOWN and current_row < len(menu) - 1:
             current_row += 1
-        elif key == curses.KEY_ENTER or key in [10, 13]:
+        # Enter key pressed
+        elif key in [curses.KEY_ENTER, 10, 13]:
+            # Option 0 -> Run Test Function
             if current_row == 0:
                 stdscr.clear()
-                stdscr.addstr(0, 0, "Running test function...\n")
+                stdscr.addstr(0, 0, "Running test function...\n\n")
                 stdscr.refresh()
+
+                # Run the test and display everything
                 test(stdscr)
+
+                # Once test is done, ask user to press a key
                 stdscr.addstr("\nPress any key to return to the menu.")
                 stdscr.refresh()
                 stdscr.getch()
-            elif current_row == 1:
+
+                # Clear screen & reprint menu
+                print_menu(current_row)
+
+            # Option 1 -> Check Email
+            # Option 2 -> Get New Jobs
+            # Option 3 -> Fill Job Info
+            elif current_row in [1, 2, 3]:
+                stdscr.clear()
+                stdscr.addstr(0, 0, "This option is not implemented yet.\n")
+                stdscr.addstr("\nPress any key to return to the menu.")
+                stdscr.refresh()
+                stdscr.getch()
+                print_menu(current_row)
+
+            # Option 4 -> Exit
+            elif current_row == 4:
                 break
+
         print_menu(current_row)
 
 if __name__ == "__main__":
@@ -247,33 +265,58 @@ https://github.com/SimplifyJobs/New-Grad-Positions
 https://github.com/ReaVNaiL/New-Grad-2024
 https://github.com/SimplifyJobs/Summer2025-Internships
 
-|||||||||||||		File: utils\ai\gen_app.py		|||||||||||||
-'''
-FILE: utils/ai/gen_app.py
-DESCRIPTION: This file contains utility functions for generating answers to
-job application questions using the GPT-3 API. These answers can then be used
-to update the Notion database and store the answers for future reference.
-'''
+|||||||||||||		File: src\ai\gen_app.py		|||||||||||||
+"""
+FILE: src/ai/gen_email.py
 
-|||||||||||||		File: utils\ai\gen_email.py		|||||||||||||
-'''
-FILE: utils/ai/gen_email.py
-DESCRIPTION: This file contains utility functions for finding out emails
-that contain job application information. These emails can then be used to
-update the Notion database and create answers using the GPT-3 API.
-'''
+DESCRIPTION: Utility functions for generating job-application-related
+emails or replies using GPT-based APIs.
+"""
 
-|||||||||||||		File: utils\email\gmail.py		|||||||||||||
-'''
-FILE: utils/email/gmail.py
-DESCRIPTION: This file contains utility functions for scaning job emails 
-using the Gmail API. These emails can then be used to update the Notion
-database and application status.
-'''
+def generate_email_response(email_text):
+    """
+    Stub function for GPT-3 or GPT-4 based email response generation.
+    """
+    print("Stub: Generating email response using GPT-based model.")
+    # Add your actual logic for generating the text
+    return "Sample Email Reply"
 
-|||||||||||||		File: utils\notion\database.py		|||||||||||||
+
+|||||||||||||		File: src\ai\gen_email.py		|||||||||||||
+"""
+FILE: src/ai/gen_email.py
+DESCRIPTION: Utility functions for generating job-application-related
+emails or replies using GPT-based APIs.
+"""
+
+def generate_email_response(email_text):
+    """
+    Stub function for GPT-3 or GPT-4 based email response generation.
+    """
+    print("Stub: Generating email response using GPT-based model.")
+    # Add your actual logic for generating the text
+    return "Sample Email Reply"
+
+
+|||||||||||||		File: src\email\gmail.py		|||||||||||||
+"""
+FILE: src/email/gmail.py
+
+DESCRIPTION: Utility functions for scanning job emails using the Gmail API.
+"""
+
+def check_gmail_inbox():
+    """
+    Stub function to check Gmail inbox.
+    """
+    print("Stub: Checking Gmail inbox...")
+    # Implement your actual logic to connect to Gmail API
+    return []
+
+
+|||||||||||||		File: src\notion\database.py		|||||||||||||
 '''
-FILE: utils/notion/database.py
+FILE: src/notion/database.py
 DESCRIPTION: This file contains utility functions for interacting with Notion databases.
 '''
 
@@ -586,7 +629,7 @@ def update_db_schema(database_id, headers, updates):
         return None
 
 
-|||||||||||||		File: utils\notion\ref.md		|||||||||||||
+|||||||||||||		File: src\notion\ref.md		|||||||||||||
 # Notion API Reference: Databases
 
 ## Table of contents
@@ -1491,20 +1534,104 @@ You're ready to help users take advantage of Notion's flexible and extensible da
 - Learn more about [pagination](https://developers.notion.com/reference/pagination) to handle large databases efficiently.
 
 
-|||||||||||||		File: utils\web\application.py		|||||||||||||
+|||||||||||||		File: src\utils\redirector.py		|||||||||||||
 '''
-FILE: utils/web/application.py
-DESCRIPTION: This file contains utility functions for running the web
-browser to go through job links and scrape job information. This information
-can then be used to update the Notion database and create answers using the
-GPT-3 API.
+File: redirector.py
+
+Description: Utility functions for redirecting stdout to a curses window.
 '''
 
-|||||||||||||		File: utils\web\login.py		|||||||||||||
-'''
-FILE: utils/web/login.py
-DESCRIPTION: This file contains utility functions for logging into websites
-using the Selenium web driver. This is useful for scraping job information
-from websites that require a login.
-'''
+# local imports
+import curses
+from io import StringIO
+
+class StdoutRedirector:
+    """
+    Redirects stdout to write into the curses window with basic line-wrapping.
+    """
+    def __init__(self, stdscr):
+        self.stdscr = stdscr
+        self.buffer = StringIO()
+        self.line = 0  # current line in the curses window
+
+    def write(self, output):
+        self.buffer.write(output)
+        # If there's a newline in the output, flush immediately.
+        # (This helps ensure prints appear in near real-time.)
+        if '\n' in output:
+            self.flush()
+
+    def flush(self):
+        # Move cursor to start of buffer
+        self.buffer.seek(0)
+        text = self.buffer.read()
+        # Reset the buffer so future writes start fresh
+        self.buffer = StringIO()
+
+        # Split text into lines
+        lines = text.split('\n')
+        h, w = self.stdscr.getmaxyx()  # height, width of current window
+
+        for line in lines:
+            # Wrap each line if longer than the window width
+            wrapped_chunks = [
+                line[i : i + (w - 1)]  # w-1 to avoid a newline at last column
+                for i in range(0, len(line), w - 1)
+            ]
+            # If the line is empty (just a newline), we want an empty chunk to move the cursor
+            if not wrapped_chunks:
+                wrapped_chunks = [""]
+
+            for chunk in wrapped_chunks:
+                # If we've run out of vertical space, wait for keypress and then clear screen
+                if self.line >= h - 1:
+                    self.stdscr.addstr(h - 1, 0, " -- More (press any key) --")
+                    self.stdscr.refresh()
+                    self.stdscr.getch()  # wait for user
+                    self.stdscr.clear()
+                    self.line = 0
+
+                try:
+                    self.stdscr.addstr(self.line, 0, chunk)
+                except curses.error:
+                    # If there's an error writing, we can safely ignore or handle differently
+                    pass
+
+                self.line += 1
+
+        # Refresh screen to show newly printed lines
+        self.stdscr.refresh()
+
+|||||||||||||		File: src\web\application.py		|||||||||||||
+"""
+FILE: src/web/application.py
+
+DESCRIPTION: Utility functions for running the web browser to go through job
+links and scrape job information.
+"""
+
+def scrape_job_links():
+    """
+    Stub function to scrape job links from the web.
+    """
+    print("Stub: Scraping job links from websites...")
+    # Implement your actual scraping logic here
+    return []
+
+
+|||||||||||||		File: src\web\login.py		|||||||||||||
+"""
+FILE: src/web/login.py
+
+DESCRIPTION: Utility functions for logging into websites using Selenium.
+"""
+
+def login_to_site(username, password, url):
+    """
+    Stub function to log into a website using Selenium.
+    """
+    print(f"Stub: Logging into {url} with username={username}")
+    # Implement Selenium automation steps for login
+    return True
+
 

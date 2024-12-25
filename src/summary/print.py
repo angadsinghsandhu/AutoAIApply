@@ -148,4 +148,4 @@ if __name__ == '__main__':
     create_summary_file(args.src_dir, args.summary_file_path, args.file_extensions, args.exclude_files, args.exclude_dirs)
 
 # sample use:
-# python utils/summary/print.py '.' 'utils/summary/summary.txt' --file_extensions .py .txt .env .md --exclude_dirs __pycache__ .venv .git summary
+# python src/summary/print.py '.' 'src/summary/summary.txt' --file_extensions .py .txt .env .md --exclude_dirs __pycache__ .venv .git summary

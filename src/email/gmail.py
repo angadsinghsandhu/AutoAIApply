@@ -1,5 +1,5 @@
 """
-FILE: utils/email/gmail.py
+FILE: src/email/gmail.py
 
 DESCRIPTION: Utility functions for scanning job emails using the Gmail API.
 """

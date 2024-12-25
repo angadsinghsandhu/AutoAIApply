@@ -1,5 +1,5 @@
 """
-FILE: utils/ai/gen_email.py
+FILE: src/ai/gen_email.py
 DESCRIPTION: Utility functions for generating job-application-related
 emails or replies using GPT-based APIs.
 """
